@@ -1,0 +1,267 @@
+1. DevOps for Freshers
+	1.0. Overview	
+		- Envr:
+			+ Development
+			+ Staging
+			+ UAT
+			+ Sandbox
+			
+			+ Production
+			
+		- DevOps:
+			+ Tại sao dùng công cụ/công nghệ này: cty có ai biết tools ngoài tôi k? có khả năng training đc cho ng khác về tools đó k? chứ ko phải vì nó xịn mà tôi dùng
+			+ 
+			
+		- Laptop: 16GB Ram, 80GB HDD
+		
+		- Contents:
+			+ 1. Linux			
+			+ 2. Git			
+			+ 3. CI/CD: 		tối ưu quy trình làm việc, gia tăng giá trị sp, tiết kiệm  trực tiếp tài nguyên cty -> 1 click là triển khai dự án
+			+ 4. Docker:		docker hóa dự án / docker file	
+			+ 5. Jenkins:		tools for CI/CD	
+			+ 6. Monitoring:	tự động cảnh báo khi có lỗi
+			
+	1.1. Linux
+		+ Ưu điểm:
+			- tối ưu hs, tiết kiệm chi phí:		phù hợp hầu hết phần cứng của máy tính cá nhân & server, no GUI nên hiệu suất tốt hơn win, 
+			- ổn định, bảo mật:					vòng đời os lâu, open source, qly truy cập mạnh & ngăn chặn truy cập trái phép
+			- knang kiểm soát và linh hoạt: 	open source -> tùy chỉnh mọi thứ & toàn quyền, nhiều loại os -> lựa chọn phù hợp
+			- pt & cập nhật:					cộng đồng pt lớn, cập nhật thường xuyên
+			- tương thích đa nền tảng:			triển khai đc nhiều loại dự án với nguồn tài nguyên hợp lý
+			- cộng đồng phát triển lớn:			cộng đồng chuyên tech
+			
+		+ Install Ubuntu server:
+			- VMWare Network:
+				+ Bridge:		các thiết bị khác sử dụng chung mạng sẽ truy cập trực tiếp đc đến web trên máy ảo (điện thoại, laptop khác, ... ~ mạng LAN nội bộ: 192.168.0/1.x) 	-> nên dùng với PC
+				+ NAT:			chỉ truy cập đến web trên máy ảo từ thiết bị khởi tạo																								-> nên dùng với laptop
+				
+			- IP máy ảo: DHCPv4 ~ 192.168.1.1/24
+				+ Nên set IP tĩnh, để khi tắt máy ảo và bật lại thì IP ko thay đổi
+				+ sudo -i -> 
+				+ nano /etc/netplan/xx_installer-config.yaml -> 
+					- edit: 	dhcpv4: 		false
+					- add: 		addresses: 	[192.168.1.110/24]
+								gateway4:	192.168.1.1				~ Gateway IP của NAT -> VMWare settings
+								nameservers:
+								  addresses: [8.8.8.8,8.8.4.4]
+				+ netplan apply
+				+ ip add		-> check ip
+				
+				+ Virtual Box: 
+					- NAT:			10.0.2.0/24
+						+ enp0s3
+						+ dhcpv4: 	10.0.2.15/24
+					- Host only:	192.168.56.1/24
+						+ enp0s8
+						+ 
+					- Bridge:
+						+ 
+						+ 
+					
+			
+			- 
+		
+		+ Folders tree:
+			- /: (root) contains subfolders below
+				+ bin / boot / dev / etc / lib / media / mnt / opt / sbin / srv / 
+				+ root: 
+				+ home:	ngocnm / quanvd / ...
+				+ usr:	bin / include / lib / sbin
+				+ var:	cache / log / tmp / spool
+				+ ...
+		
+		+ Commands:
+			- Crt + C: exit
+			
+			- pwd: 		đang ở folder nào
+			- whoami:	đăng nhập với user nào
+			- cd folder / cd .. / cd ...
+			- ls / ls folder / ls folder +  tab / ls -l / ls -a (show hidden) / ls -t (sort by time)
+			- mkdir folder / mkdir -p folder/subfolder/subsub
+			- touch filePath: tạo file
+			- cat filePath: xem nội dung file
+			- rm filePath / rm -r folder / rm -rf file/folder
+			- cp -r folderPath destPath / cp filePath destPath
+			- mv folder/file destPath
+			- echo content / echo content > filePath: in nội dung - ghi đè / echo content >> filePath: append
+			- history / clear / exit
+			- tail -n [num] filePath > newFilePath: xem nội dung n dòng của file / tail -f filePath: xem content file real time
+			
+			- sudo: + command = chạy command với quyền root nên cần pass
+				- sudo - i: sau lệnh này chạy tất cả command với quyền root
+				
+			- apt install/remove package -y: cài package ko cần xác nhận yes
+			
+			- Ram/Cpu usage:
+				+ free -m	: ram usage
+				+ df -h / 	: cpu usage
+				+ top:		task manager
+				
+			- Server:
+				+ sudo hostnamectl set-hostname newName
+				+ sudo reboot
+				
+			- Netstat: netstat -tlpun
+				+ -t: show tcp connection port
+				+ -l: show port open & listen to accept connection
+				+ -p: show process/program of connection
+				+ -u: show udp connection
+				+ -n: show ip & port dang so instead domain
+			
+			- Process: pf -ef
+			
+			- Internet:
+				+ ping 8.8.8.8: 				= ping google.com
+				+ telnet IP port:				check connect to other server
+				+ traceroute -T -p port IP: 	check port open or not (-T = tcp connection, -p = port)
+		
+		+ Vim editor:
+			- vi filePath: mở file để edit, chưa có file thì tự tạo file mới
+			- I: insert
+				+ esc:	Command mode
+				+ :x: 	exit & save
+				+ :q!:	exit & not save
+			- Command mode:
+				+ dd: delete line
+				+ U: = ctr + Z
+				+ yy: copy line
+				+ p: paste
+				+ / + key: search
+			
+		
+		+ Quyền truy cập: cần quyền root trước
+			- User: 
+				+ root user: 	superuser, rw all file, manage account, group, owner ~ sudo command
+				+ system user:	created by the operating system during installation for running system processes and services -> used to run non-interactive or background processes
+				+ regular user:	standard users, only rw files in home/user, can’t access other users’ files or system files without appropriate permissions.
+				
+				+ useradd:	add user only
+				+ adduser: 	add user kèm create passwd, home/user folder, user info ... --> tạo xong ssh đc luôn
+				+ su user:	switch user
+				+ deluser user:		xóa user
+				+ vi /etc/passwd:	xem thông tin user
+				
+			- Group: khi tạo 1 user mới thì tự động tạo 1 group mới cùng tên với user và add user vào group đó
+				+ groupadd/delgroup=groupdell groupName:			
+				+ usermod -aG groupName userName:		(-a = append, -G= liệt kê ds group của user, nếu bỏ -G thì xóa user khỏi các group đã add trước đó)
+				+ groups userName:						kiểm tra list group của user
+				+ deluser userName groupName:			xóa user khỏi group
+				+ getent group/passwd/userName:			list group/passwd/userName
+				
+			- passwd: userName : passwd : userId : groupId : comment/description/userInfo : homeDirectory : shell
+				
+			- Owner permission: chown
+				+ chủ sở hữu:		u
+				+ nhóm sở hữu:		g
+				+ nhóm user khác: 	o
+				
+				+ ls -l:	xem full folder/file infor:  
+				+ chown -R owner:groupOwner folder/file		(-R: thay đổi folder cha thì thay đổi luôn file/folder con, nếu ko thì chỉ thay đổi folder cha)
+				
+			- Access permission: chmode, (quyền tối thiểu để tác động đc vào 1 file là quyền execute (x). ví dụ có quyền r nhưng ko x thì ko mở đc file)
+				+ read:		4	r
+				+ write:	2	w	
+				+ execute:	1	x
+				+ full:		7			(7=4+2+1, 6=4+2, 5=4+1, 3=2+1, 1, 0=no permissions)
+				
+				+ formart: drwx.../-rwx: d=directory, -=file
+					* drwxr-xr-x   2 root root       4096 Oct  7 17:08 srv
+					* lrwxrwxrwx   1 root root          7 Oct  7 08:35 bin -> usr/bin
+					* -rw-------   1 root root 4105175040 Jan  3 05:39 swap.img
+					
+				+ chmod -R u=rwx,g=rx,o=- folder/filename
+				+ chmod -R 777 folder/filename:	change mode for open to all user	(chmode ugo filename)
+				
+		+ Tư duy triển khai dự án:
+			+ Project:
+				- Project type: Frontend | Backend
+				- Tool deploy project | version of tool: version tương thích với yêu cầu của project
+				- Files:
+					+ File chức năng:	file code										-> not
+					+ File cấu hình:	config, port, connection, connect database		-> DevOps takecare
+					+ File khác:														-> not
+				
+				- Deploy: 2 steps
+					+ 1. Build: command build file/folder
+					+ 2. Run:	run file/folder
+					
+			+ DevOps: 4 steps
+				- 1. Công cụ j?
+				- 2. File cấu hình ở đâu?
+				- 3. Làm sao build?
+				- 4. Run thế nào?
+				
+				- Note:
+					+ mỗi project có 1 thư mục làm việc riêng
+					+ mỗi project có user riêng
+					--> ko dùng user root để deploy dự án, nếu bị chiếm quyền thì ảnh hưởng toàn bộ hệ thống 
+					--> giải pháp: tạo riêng user cho mỗi thư mục riêng của dự án, và user đó chỉ có quyền trong thư mục riêng đó thôi và chỉ chạy bởi user đó
+					
+			+ Deploy Frontend: Vue/React: 4 steps - todolist/vision
+				// 0: user root
+				+ copy dự án lên server: scp projectFile serverAddr = scp E:/DevOps/todolist.zip ngocnm@192.168.56.101:/home/todolist
+				+ giải nén: unzip todolist.zip /projects
+				+ tạo user riêng cho project: adduser todolist
+				+ set owner & mode cho folder /projects/todolist/: 
+					- chown -R todolist:todolist /projects/todolist/
+					- chmod -R 750 /projects/todolist/
+				// 1. 
+				+ install packages: 		sudo apt install nodejs npm		(user root)
+				+ install dependencies:		npm install						(user todolist)
+				// 2
+				+ Configs:
+					- package.json:
+						+ "scripts": 
+							- "serve":	
+							- "build": ~ build project ~ npm run build "params=vue-cli-service build"
+					- vue.config.js: export port ~ 3000, ...
+				// 3
+				+ build: 					npm run build 		--> build ra folder /dist/		(user todolist)
+				// 4
+				+ run:	3 ways for run frontend project
+					- way1: 	web server					nginx
+					- way2: 	service					
+					- way3: 	pm2 ??						
+					
+					- local:	npm run serve				(serve in scripts config)
+
+			+ Deploy Backend:
+			
+			+ Nginx: 		(user root) - sau khi build project xong -> step 4: run project by webserver
+				- install: apt install nginx -> default port 80: 
+				- configs: /etc/nginx: subfolders [sites-available, conf.d]
+					+ 1. sites-available/default: set port 8080 --> test syntax: nginx -t  --> apply new config: systemctl restart nginx / nginx -s reload (systemctl restart nginx: restart all nginx cho all project - ko nên dùng)
+					+ 2. add file config for each project to subfolder /conf.d: /etc/nginx/conf.d/todolist.conf
+						server {
+							listen 		8081; // port
+							root 		/projects/todolist/dist/; // build folder
+							index 		index.html;
+							try_files	$uri $uri/ /index.html;
+						}
+		
+					+ 3. add group owner cho user nginx: default user nginx is www-data, ko có quyền chạy todolist, todolist is run with groupOwner todolist nên ko chạy đc -> error 500
+						- usermod -aG todolist nginx
+						
+			+ Service: 		(user root) - run by service, tương tự như system service - systemctl
+				- location:	/lib/systemd/system/
+				- tao file config service: vi /lib/systemd/system/vision.service
+					[Service]
+					Type=simple
+					User=vision
+					Restart=on-failure							// khi service bi die thi tu restart lai
+					WorkingDirectory=/projects/vision/
+					ExecStart=npm run start -- --port=3000
+					
+				- run: systemctl daemon-reload 		--> 	systemctl restart vision (.service) 	--> 	systemctl status vision
+					
+
+	1.2. Git
+	
+	1.3. CI/CD
+	
+	1.4. Docker
+	
+	1.5. Jenkins
+	
+	1.6. Monitoring
